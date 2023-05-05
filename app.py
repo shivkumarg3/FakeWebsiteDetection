@@ -2,31 +2,28 @@
 
 #https://openphish.com/(fake website list)
 
-import streamlit as st
-import joblib
-import requests
 
-# Download and save the model
-url = 'https://raw.githubusercontent.com/shivkumarg3/FakeWebsiteDetection/main/phishing.pkl'
-response = requests.get(url)
+import uvicorn
+from fastapi import FastAPI
+import joblib,os
 
-with open('phishing.pkl', 'wb') as f:
-    f.write(response.content)
+app = FastAPI()
 
-# Load the model
-phish_model_ls = joblib.load('phishing.pkl')
+#pkl
+phish_model = open('/Users/shivkumar/Desktop/SDAI_Project/phishing.pkl','rb')
+phish_model_ls = joblib.load(phish_model)
 
-# Streamlit UI
-st.title("Fake Website Detection")
-feature = st.text_input("Enter the website URL:")
+# ML Aspect
+@app.get('/predict/{feature}')
+async def predict(features):
+	X_predict = []
+	X_predict.append(str(features))
+	y_Predict = phish_model_ls.predict(X_predict)
+	if y_Predict == 'bad':
+		result = "This is a Phishing Site(fake website)"
+	else:
+		result = "This is not a Phishing Site(good website)"
 
-if st.button("Predict"):
-    if feature:
-        X_predict = [feature]
-        y_Predict = phish_model_ls.predict(X_predict)
-        if y_Predict[0] == 'bad':
-            st.warning("This is a Phishing Site(fake website)")
-        else:
-            st.success("This is not a Phishing Site(good website)")
-    else:
-        st.error("Please enter a valid URL")
+	return (features, result)
+if __name__ == '__main__':
+	uvicorn.run(app,host="127.0.0.1",port=8000)
