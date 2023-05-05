@@ -6,12 +6,19 @@
 import uvicorn
 from fastapi import FastAPI
 import joblib,os
+import requests
 
 app = FastAPI()
 
+url = 'https://github.com/shivkumarg3/FakeWebsiteDetection/blob/main/phishing.pkl'
+response = requests.get(url)
+
+with open('phishing.pkl', 'wb') as f:
+    f.write(response.content)
+
+
 #pkl
-phish_model = open('https://github.com/shivkumarg3/FakeWebsiteDetection/blob/main/phishing.pkl','rb')
-phish_model_ls = joblib.load(phish_model)
+phish_model_ls = joblib.load(phishing.pkl)
 
 # ML Aspect
 @app.get('/predict/{feature}')
