@@ -1,5 +1,4 @@
 uvicorn
-fastapi
 joblib
 streamlit
 requests
