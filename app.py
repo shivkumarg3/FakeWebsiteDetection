@@ -10,7 +10,7 @@ import joblib,os
 app = FastAPI()
 
 #pkl
-phish_model = open('/Users/shivkumar/Desktop/SDAI_Project/phishing.pkl','rb')
+phish_model = open('https://github.com/shivkumarg3/FakeWebsiteDetection/blob/main/phishing.pkl','rb')
 phish_model_ls = joblib.load(phish_model)
 
 # ML Aspect
